@@ -150,14 +150,14 @@ public class TimeLinePanel extends javax.swing.JPanel {
 
         jToolBar1.setRollover(true);
 
-        btnAddScript.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cmlk/images/32px-Crystal_Clear_action_edit_add-blue.png"))); // NOI18N
+        btnAddScript.setIcon(new javax.swing.ImageIcon(getClass().getResource("/src/v2.6/src/org/wingate/cmilkshake/images/32px-Crystal_Clear_action_edit_add-blue.png"))); // NOI18N
         btnAddScript.setToolTipText("Open script(s)");
         btnAddScript.setFocusable(false);
         btnAddScript.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAddScript.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(btnAddScript);
 
-        btnRemoveScript.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cmlk/images/32px-Crystal_Clear_action_edit_remove.png"))); // NOI18N
+        btnRemoveScript.setIcon(new javax.swing.ImageIcon(getClass().getResource("/src/v2.6/src/org/wingate/cmilkshake/images/32px-Crystal_Clear_action_edit_remove.png"))); // NOI18N
         btnRemoveScript.setToolTipText("Close script(s)");
         btnRemoveScript.setFocusable(false);
         btnRemoveScript.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -165,7 +165,7 @@ public class TimeLinePanel extends javax.swing.JPanel {
         jToolBar1.add(btnRemoveScript);
         jToolBar1.add(jSeparator1);
 
-        btnValidChanges.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cmlk/images/32px-Crystal_Clear_action_apply.png"))); // NOI18N
+        btnValidChanges.setIcon(new javax.swing.ImageIcon(getClass().getResource("/src/v2.6/src/org/wingate/cmilkshake/images/32px-Crystal_Clear_action_apply.png"))); // NOI18N
         btnValidChanges.setToolTipText("Save script(s)");
         btnValidChanges.setFocusable(false);
         btnValidChanges.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -173,7 +173,7 @@ public class TimeLinePanel extends javax.swing.JPanel {
         jToolBar1.add(btnValidChanges);
         jToolBar1.add(jSeparator2);
 
-        btnNewScript.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cmlk/images/32px-Crystal_Clear_action_filenew.png"))); // NOI18N
+        btnNewScript.setIcon(new javax.swing.ImageIcon(getClass().getResource("/src/v2.6/src/org/wingate/cmilkshake/images/32px-Crystal_Clear_action_filenew.png"))); // NOI18N
         btnNewScript.setToolTipText("Create blank script");
         btnNewScript.setFocusable(false);
         btnNewScript.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -181,21 +181,21 @@ public class TimeLinePanel extends javax.swing.JPanel {
         jToolBar1.add(btnNewScript);
         jToolBar1.add(jSeparator3);
 
-        btnCut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cmlk/images/32px-Crystal_Clear_action_editcut.png"))); // NOI18N
+        btnCut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/src/v2.6/src/org/wingate/cmilkshake/images/32px-Crystal_Clear_action_editcut.png"))); // NOI18N
         btnCut.setToolTipText("Cut");
         btnCut.setFocusable(false);
         btnCut.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnCut.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(btnCut);
 
-        btnCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cmlk/images/32px-Crystal_Clear_action_editcopy.png"))); // NOI18N
+        btnCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/src/v2.6/src/org/wingate/cmilkshake/images/32px-Crystal_Clear_action_editcopy.png"))); // NOI18N
         btnCopy.setToolTipText("Copy");
         btnCopy.setFocusable(false);
         btnCopy.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnCopy.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(btnCopy);
 
-        btnPaste.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cmlk/images/32px-Crystal_Clear_action_editpaste.png"))); // NOI18N
+        btnPaste.setIcon(new javax.swing.ImageIcon(getClass().getResource("/src/v2.6/src/org/wingate/cmilkshake/images/32px-Crystal_Clear_action_editpaste.png"))); // NOI18N
         btnPaste.setToolTipText("Paste");
         btnPaste.setFocusable(false);
         btnPaste.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
