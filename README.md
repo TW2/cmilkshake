@@ -2,3 +2,4 @@
 
 # cmilkshake
 
+You must use the latest version of Java or an early one.
