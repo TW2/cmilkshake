@@ -10,14 +10,19 @@ import java.util.List;
 
 public class MultiView extends JPanel {
 
+    private final Results results;
+
     private List<Event> a, b;
     private List<View> sentenceViews;
     private boolean compared;
 
     private int yLocation = 0;
 
-    public MultiView() {
+    public MultiView(Results results) {
         setDoubleBuffered(true);
+
+        this.results = results;
+
         compared = false;
         sentenceViews = new ArrayList<>();
 
@@ -51,15 +56,11 @@ public class MultiView extends JPanel {
             compare();
 
             int y = yLocation, h = 22;
-            int w = getWidth() / 2;
+            int w = getWidth();
 
             for(View v : sentenceViews){
                 if(y >= 0 && y <= getHeight()){
-                    switch(v.getState()){
-                        case SameContent -> v.setArea(new Rectangle(getWidth()/4, y, w, h));
-                        case HasBeenDeleted -> v.setArea(new Rectangle(0, y, w, h));
-                        case NewContent -> v.setArea(new Rectangle(w, y, w, h));
-                    }
+                    v.setArea(new Rectangle(0, y, w, h));
                     v.drawEvent(g2d);
                 }
                 y += h+1;
@@ -81,6 +82,7 @@ public class MultiView extends JPanel {
         if(compared) return;
 
         sentenceViews = Compare.getSentenceViews(a, b);
+        results.setViews(sentenceViews);
 
         compared = true;
     }

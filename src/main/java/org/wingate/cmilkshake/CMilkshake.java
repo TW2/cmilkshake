@@ -8,6 +8,7 @@ import org.wingate.cmilkshake.sub.ASS;
 import org.wingate.cmilkshake.sub.Event;
 import org.wingate.cmilkshake.ui.MultiView;
 import org.wingate.cmilkshake.ui.Results;
+import org.wingate.cmilkshake.ui.Video;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,15 +21,14 @@ import java.util.Map;
 public class CMilkshake {
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(()->{
-            new CMilkshake(args);
-        });
+        EventQueue.invokeLater(()-> new CMilkshake(args));
     }
 
     private final JFrame frame;
     private Map<String, List<Event>> variants;
     private MultiView multiView;
     private Results results;
+    private Video video;
     private JComboBox<String> comboA;
     private DefaultComboBoxModel<String> comboModelA;
     private JComboBox<String> comboB;
@@ -43,12 +43,13 @@ public class CMilkshake {
     private JFrame createUI(){
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle("CMLK v2.7 :: Hey boy ! A milkshake please !");
+        frame.setTitle("Caramel Milkshake v2.7 :: Hey boy! A milkshake please!");
         frame.setSize(1900, 1000);
 
         variants = new HashMap<>();
-        multiView = new MultiView();
         results = new Results();
+        video = new Video();
+        multiView = new MultiView(results);
         comboA = new JComboBox<>();
         comboModelA = new DefaultComboBoxModel<>();
         comboA.setModel(comboModelA);
@@ -60,45 +61,49 @@ public class CMilkshake {
         JMenu mnuFile = new JMenu("File");
         menuBar.add(mnuFile);
         JMenuItem mFileOpenASSA = new JMenuItem("Open ASS...");
-        mFileOpenASSA.addActionListener((e) -> openASSA() );
+        mFileOpenASSA.addActionListener((_) -> openASSA() );
         mnuFile.add(mFileOpenASSA);
         mnuFile.add(new JSeparator());
         JMenuItem mFileQuit = new JMenuItem("Quit");
-        mFileQuit.addActionListener((e) -> System.exit(0) );
+        mFileQuit.addActionListener((_) -> System.exit(0) );
         mnuFile.add(mFileQuit);
         frame.setJMenuBar(menuBar);
 
-        frame.getContentPane().setLayout(new BorderLayout());
+        frame.getContentPane().setLayout(new GridLayout(1, 2,2,2));
+        // Left -> Compare scripts + select scripts
+        JPanel panCompare = new JPanel(new BorderLayout());
+        // Right -> Results + Media
+        JPanel panResults = new JPanel(new GridLayout(2,1, 0, 0));
 
         // Top (just two choices of scripts to compare)
-        JPanel panNorth = new JPanel(new GridLayout(1, 2, 2,0));
+        JPanel panNorth = new JPanel(new GridLayout(1, 2, 0,0));
         panNorth.add(comboA);
-        comboA.addItemListener((e) -> {
+        comboA.addItemListener((_) -> {
             if(variants.isEmpty()) return;
             List<Event> a = variants.get(comboModelA.getElementAt(comboA.getSelectedIndex()));
             if(a != null){
                 multiView.setA(a);
-                results.setA(a);
                 handleVariants();
             }
         });
         panNorth.add(comboB);
-        comboB.addItemListener((e) -> {
+        comboB.addItemListener((_) -> {
             if(variants.isEmpty()) return;
             List<Event> b = variants.get(comboModelB.getElementAt(comboB.getSelectedIndex()));
             if(b != null){
                 multiView.setB(b);
-                results.setB(b);
                 handleVariants();
             }
         });
-        frame.getContentPane().add(panNorth, BorderLayout.NORTH);
+        // Left
+        panCompare.add(panNorth, BorderLayout.NORTH);
+        panCompare.add(multiView, BorderLayout.CENTER);
+        frame.getContentPane().add(panCompare);
 
-        // Middle (component to visually view differences)
-        frame.getContentPane().add(multiView, BorderLayout.CENTER);
-
-        // Bottom (charts and results)
-        frame.getContentPane().add(results, BorderLayout.SOUTH);
+        // Right
+        frame.getContentPane().add(panResults);
+        panResults.add(video);
+        panResults.add(results);
 
         frame.setLocationRelativeTo(null);
         return frame;

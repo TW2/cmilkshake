@@ -1,56 +1,174 @@
 package org.wingate.cmilkshake.ui;
 
-import org.wingate.cmilkshake.sub.Event;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class Results extends JPanel {
 
-    private List<Event> a, b;
-    private boolean compared;
+    private static final double RADIUS = 100d;
+    private static final double DIAMETER = RADIUS * 2;
+    private static final double X_CIRCLE = 10d;
+    private static final double Y_CIRCLE = 10d;
+
+    private List<View> views;
+
+    private int same, added, deleted;
+    private double sameStart, addedStart, deletedStart;
+    private double sameAngle, addedAngle, deletedAngle;
 
     public Results() {
         setDoubleBuffered(true);
-        compared = false;
+        views = new ArrayList<>();
+        same = -1; sameStart = 0d; sameAngle = 0d;
+        added = -1; addedStart = 0d; addedAngle = 0d;
+        deleted = -1; deletedStart = 0d; deletedAngle = 0d;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if(a != null && b != null){
+        g.setColor(Color.black);
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        if(!views.isEmpty()){
             Graphics2D g2d = (Graphics2D)g;
 
-            compare();
+            g2d.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON
+            );
+
+            Font oldFont = g2d.getFont();
+            g2d.setFont(g2d.getFont().deriveFont(Font.BOLD));
+            g2d.setFont(g2d.getFont().deriveFont(14f));
+
+            // Display the PIE
+            if(same != -1 && added != -1 && deleted != -1){
+                //=================================
+                // BACKGROUND
+                //=================================
+
+                // Same content background
+                g2d.setColor(ViewState.SameContent.getColor());
+                Arc2D arc1 = new Arc2D.Double(Arc2D.PIE);
+                arc1.setFrame(X_CIRCLE, Y_CIRCLE, DIAMETER, DIAMETER);
+                arc1.setAngleStart(sameStart);
+                arc1.setAngleExtent(sameAngle);
+                g2d.fill(arc1);
+
+                // Deleted content background
+                g2d.setColor(ViewState.HasBeenDeleted.getColor());
+                Arc2D arc2 = new Arc2D.Double(Arc2D.PIE);
+                arc2.setFrame(X_CIRCLE, Y_CIRCLE, DIAMETER, DIAMETER);
+                arc2.setAngleStart(deletedStart);
+                arc2.setAngleExtent(deletedAngle);
+                g2d.fill(arc2);
+
+                // Added content background
+                g2d.setColor(ViewState.NewContent.getColor());
+                Arc2D arc3 = new Arc2D.Double(Arc2D.PIE);
+                arc3.setFrame(X_CIRCLE, Y_CIRCLE, DIAMETER, DIAMETER);
+                arc3.setAngleStart(addedStart);
+                arc3.setAngleExtent(addedAngle);
+                g2d.fill(arc3);
+
+                //=================================
+                // FOREGROUND
+                //=================================
+
+                g2d.setColor(Color.black);
+
+                // Same content background
+                arc1.setAngleStart(sameStart);
+                arc1.setAngleExtent(sameAngle);
+                g2d.draw(arc1);
+                drawPercent(
+                        g2d,
+                        "Same",
+                        (double)same / Math.max(1d, views.size()),
+                        sameStart,
+                        sameAngle
+                );
+
+                // Deleted content background
+                arc2.setAngleStart(deletedStart);
+                arc2.setAngleExtent(deletedAngle);
+                g2d.draw(arc2);
+                drawPercent(
+                        g2d,
+                        "Deleted",
+                        (double)deleted / Math.max(1d, views.size()),
+                        deletedStart,
+                        deletedAngle
+                );
+
+                // Added content background
+                arc3.setAngleStart(addedStart);
+                arc3.setAngleExtent(addedAngle);
+                g2d.draw(arc3);
+                drawPercent(
+                        g2d,
+                        "Added",
+                        (double)added / Math.max(1d, views.size()),
+                        addedStart,
+                        addedAngle
+                );
+            }
+
+            g2d.setFont(oldFont);
         }
     }
 
-    public List<Event> getA() {
-        return a;
-    }
-
-    public void setA(List<Event> a) {
-        this.a = a;
-        compared = false;
-    }
-
-    public List<Event> getB() {
-        return b;
-    }
-
-    public void setB(List<Event> b) {
-        this.b = b;
-        compared = false;
-    }
-
     private void compare(){
-        if(compared) return;
+        same = 0;
+        added = 0;
+        deleted = 0;
 
+        for(View v : views){
+            switch (v.getState()){
+                case SameContent -> same++;
+                case HasBeenDeleted -> deleted++;
+                case NewContent -> added++;
+            }
+        }
 
+        double total = views.size();
 
-        compared = true;
+        sameStart = 0d;
+        sameAngle = same / Math.max(1d, total) * 360d;
+
+        deletedStart = sameStart + sameAngle;
+        deletedAngle = deleted / Math.max(1d, total) * 360d;
+
+        addedStart = deletedStart + deletedAngle;
+        addedAngle = 360d - (sameAngle + deletedAngle);
+    }
+
+    public void setViews(List<View> views) {
+        this.views = views;
+        compare();
+        repaint();
+    }
+
+    private void drawPercent(Graphics2D g, String label, double percent,
+                             double angleStart, double angleExtent){
+        double xCenter = RADIUS + X_CIRCLE;
+        double yCenter = RADIUS + Y_CIRCLE;
+        double angle = angleStart + angleExtent / 2;
+        double a = Math.toRadians(-angle);
+        double r = RADIUS / 2d;
+        double x = Math.cos(a) * r + xCenter;
+        double y = Math.sin(a) * r + yCenter;
+
+        String s = String.format("%s %d%%", label, (int)Math.round(percent * 100d));
+
+        int size = g.getFontMetrics().stringWidth(s);
+        g.drawString(s, (float)x - size / 2f, (float)y);
     }
 }

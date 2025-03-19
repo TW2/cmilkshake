@@ -45,6 +45,17 @@ public class View {
 
     public void drawEvent(Graphics2D g){
         Rectangle r = area;
+
+        Color back = new Color(
+                state.getColor().getRed(),
+                state.getColor().getGreen(),
+                state.getColor().getBlue(),
+                20
+        );
+
+        g.setColor(back);
+        g.fillRect(r.x, r.y, r.width, r.height);
+
         g.setColor(state.getColor());
 
         Font oldFont = g.getFont();
