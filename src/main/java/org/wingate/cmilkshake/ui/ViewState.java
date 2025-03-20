@@ -6,7 +6,10 @@ public enum ViewState {
     SameContent("SameContent", Color.white),
     HasChanged("HasChanged", Color.yellow),
     NewContent("NewContent", Color.green),
-    HasBeenDeleted("HasBeenDeleted", Color.red);
+    HasBeenDeleted("HasBeenDeleted", Color.red),
+    StartsWith("StartsWith", Color.pink),
+    EndsWith("EndsWith", Color.magenta),
+    Different("Different", Color.orange);
 
     final String name;
     final Color color;

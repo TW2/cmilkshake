@@ -77,6 +77,75 @@ public class Compare {
         return c;
     }
 
+    public static List<View> getSentenceDiffViews(List<View> deleted, List<View> added){
+        final List<View> startsViews = new ArrayList<>();
+        final List<View> endsViews = new ArrayList<>();
+        final List<View> differentViews = new ArrayList<>();
+
+        for(View ea : deleted){
+            String sA = strip(ea.getEvent().getText());
+            String sentence_A = sA.substring(0, Math.min(25, Math.max(0, sA.length()-1)));
+            boolean found = false;
+            for(View eb : added){
+                String sB = strip(eb.getEvent().getText());
+                String sentence_B = sB.substring(0, Math.min(25, Math.max(0, sB.length()-1)));
+                if(sentence_A.equals(sentence_B)){
+                    found = true;
+                    break;
+                }
+            }
+            if(found){
+                startsViews.add(new View(ea.getEvent(), ViewState.StartsWith));
+            }
+        }
+
+        for(View ea : deleted){
+            String sA = strip(ea.getEvent().getText());
+            int indexA = Math.max(0, sA.length() - Math.min(25, Math.max(0, sA.length() - 1)));
+            String sentence_A = sA.substring(indexA);
+            boolean found = false;
+            for(View eb : added){
+                String sB = strip(eb.getEvent().getText());
+                int indexB = Math.max(0, sB.length() - Math.min(25, Math.max(0, sB.length() - 1)));
+                String sentence_B = sB.substring(indexB);
+                if(sentence_A.equals(sentence_B)){
+                    found = true;
+                    break;
+                }
+            }
+            if(found){
+                endsViews.add(new View(ea.getEvent(), ViewState.EndsWith));
+            }
+        }
+
+        for(View eb : added){
+            String sentence_B = eb.getEvent().getText();
+            boolean found = false;
+            for(View starts : startsViews){
+                if(starts.getEvent().getText().equals(sentence_B)){
+                    found = true;
+                    break;
+                }
+            }
+            for(View ends : endsViews){
+                if(!found && ends.getEvent().getText().equals(sentence_B)){
+                    found = true;
+                    break;
+                }
+            }
+            if(!found){
+                differentViews.add(new View(eb.getEvent(), ViewState.Different));
+            }
+        }
+
+        final List<View> c = new ArrayList<>();
+        c.addAll(startsViews);
+        c.addAll(endsViews);
+        c.addAll(differentViews);
+
+        return c;
+    }
+
     private static String strip(String text){
         String str;
         if(text.contains("{")){
