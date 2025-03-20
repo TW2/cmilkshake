@@ -9,6 +9,7 @@ import org.wingate.cmilkshake.sub.Event;
 import org.wingate.cmilkshake.ui.MultiView;
 import org.wingate.cmilkshake.ui.Results;
 import org.wingate.cmilkshake.ui.Video;
+import org.wingate.cmilkshake.ui.Wave;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,6 +30,7 @@ public class CMilkshake {
     private MultiView multiView;
     private Results results;
     private Video video;
+    private Wave waveform;
     private JComboBox<String> comboA;
     private DefaultComboBoxModel<String> comboModelA;
     private JComboBox<String> comboB;
@@ -49,6 +51,7 @@ public class CMilkshake {
         variants = new HashMap<>();
         results = new Results();
         video = new Video();
+        waveform = new Wave();
         multiView = new MultiView(results);
         comboA = new JComboBox<>();
         comboModelA = new DefaultComboBoxModel<>();
@@ -101,9 +104,12 @@ public class CMilkshake {
         frame.getContentPane().add(panCompare);
 
         // Right
+        JPanel panWaveResults = new JPanel(new GridLayout(2, 1, 0, 0));
         frame.getContentPane().add(panResults);
         panResults.add(video);
-        panResults.add(results);
+        panWaveResults.add(waveform);
+        panWaveResults.add(results);
+        panResults.add(panWaveResults);
 
         frame.setLocationRelativeTo(null);
         return frame;

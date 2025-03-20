@@ -3,7 +3,8 @@ package org.wingate.cmilkshake.ui;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Arc2D;
-import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,9 @@ public class Results extends JPanel {
     private static final double DIAMETER = RADIUS * 2;
     private static final double X_CIRCLE = 10d;
     private static final double Y_CIRCLE = 10d;
+
+    private static final double BAR_CHART_LIMIT = 200d;
+    private static final double BAR_CHART_HEIGHT = 27d;
 
     private List<View> views;
 
@@ -48,8 +52,10 @@ public class Results extends JPanel {
             g2d.setFont(g2d.getFont().deriveFont(Font.BOLD));
             g2d.setFont(g2d.getFont().deriveFont(14f));
 
-            // Display the PIE
+
             if(same != -1 && added != -1 && deleted != -1){
+                // Display the PIE CHART
+
                 //=================================
                 // BACKGROUND
                 //=================================
@@ -119,6 +125,11 @@ public class Results extends JPanel {
                         addedStart,
                         addedAngle
                 );
+
+                // Display the BAR CHART
+                drawBarChart(g2d);
+
+
             }
 
             g2d.setFont(oldFont);
@@ -170,5 +181,84 @@ public class Results extends JPanel {
 
         int size = g.getFontMetrics().stringWidth(s);
         g.drawString(s, (float)x - size / 2f, (float)y);
+    }
+
+    private void drawBarChart(Graphics2D g){
+        // Draw the base
+        g.setColor(Color.white);
+        Rectangle2D r = new Rectangle2D.Double(230.0, 10.0, 3d, BAR_CHART_LIMIT);
+        g.fill(r);
+
+        g.setColor(new Color(0,0,63));
+        r = new Rectangle2D.Double(230.0 + 5d, 10.0, BAR_CHART_LIMIT, BAR_CHART_LIMIT);
+        g.fill(r);
+
+        g.setColor(new Color(0,0,255));
+        for(double y=0d; y<BAR_CHART_LIMIT + 1; y+=BAR_CHART_LIMIT/10d){
+            Line2D l = new Line2D.Double(
+                    230d + 5d,
+                    10d + y,
+                    230d + 5d + BAR_CHART_LIMIT,
+                    10d + y);
+            g.draw(l);
+        }
+
+        g.setColor(new Color(0,0,127));
+        for(double x=0d; x<BAR_CHART_LIMIT + 1; x+=BAR_CHART_LIMIT/10d){
+            Line2D l = new Line2D.Double(
+                    230d + 5d + x,
+                    10d,
+                    230d + 5d + x,
+                    10d + BAR_CHART_LIMIT);
+            g.draw(l);
+        }
+
+        // Draw same
+        g.setColor(Color.black);
+        Rectangle2D rSame = new Rectangle2D.Double(
+                230.0 + 5d,
+                10.0 + (BAR_CHART_LIMIT - 3 * BAR_CHART_HEIGHT),
+                ((double)same / Math.max(1d, views.size())) * BAR_CHART_LIMIT,
+                BAR_CHART_HEIGHT
+        );
+        g.fill(rSame);
+        g.setColor(ViewState.SameContent.getColor());
+        g.drawString(
+                Integer.toString(same),
+                (float)(230.0 + 7d),
+                (float)(10.0 + (BAR_CHART_LIMIT - 3 * BAR_CHART_HEIGHT)) + 15f
+        );
+
+        // Draw deleted
+        g.setColor(Color.black);
+        Rectangle2D rDeleted = new Rectangle2D.Double(
+                230.0 + 5d,
+                10.0 + (BAR_CHART_LIMIT - 3 * BAR_CHART_HEIGHT) * 1/3,
+                ((double)deleted / Math.max(1d, views.size())) * BAR_CHART_LIMIT,
+                BAR_CHART_HEIGHT
+        );
+        g.fill(rDeleted);
+        g.setColor(ViewState.HasBeenDeleted.getColor());
+        g.drawString(
+                Integer.toString(deleted),
+                (float)(230.0 + 7d),
+                (float)(10.0 + (BAR_CHART_LIMIT - 3 * BAR_CHART_HEIGHT) * 1/3) + 15f
+        );
+
+        // Draw added
+        g.setColor(Color.black);
+        Rectangle2D rAdded = new Rectangle2D.Double(
+                230.0 + 5d,
+                10.0 + (BAR_CHART_LIMIT - 3 * BAR_CHART_HEIGHT) * 2/3,
+                    ((double)added / Math.max(1d, views.size())) * BAR_CHART_LIMIT,
+                BAR_CHART_HEIGHT
+        );
+        g.fill(rAdded);
+        g.setColor(ViewState.NewContent.getColor());
+        g.drawString(
+                Integer.toString(added),
+                (float)(230.0 + 7d),
+                (float)(10.0 + (BAR_CHART_LIMIT - 3 * BAR_CHART_HEIGHT) * 2/3) + 15f
+        );
     }
 }
